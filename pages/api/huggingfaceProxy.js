@@ -33,7 +33,10 @@ export default async function handler(req, res) {
 
     return res.status(200).json({ output: output || "Sem resposta do modelo" });
   } catch (err) {
-    console.error("❌ Erro HuggingFace:", err.response?.data || err.message);
-    return res.status(500).json({ error: "Erro no proxy HuggingFace" });
+    console.error("❌ Erro HuggingFace:", err.response?.status, err.response?.data || err.message);
+    return res.status(500).json({
+      error: "Erro na API do Hugging Face",
+      details: err.response?.data || err.message,
+    });
   }
 }
