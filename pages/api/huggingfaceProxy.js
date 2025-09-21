@@ -1,52 +1,39 @@
 // pages/api/huggingfaceProxy.js
 import axios from "axios";
 
-const MODEL_ID = process.env.HF_MODEL_ID || "mistralai/Mistral-7B-Instruct-v0.2";
-const ALLOW_ORIGINS = [
-  "https://neo-flowoff.netlify.app",
-  "http://localhost:5173",
-  "http://localhost:3000",
-];
-
 export default async function handler(req, res) {
-  // CORS básico p/ testes
-  const origin = req.headers.origin || "";
-  if (req.method === "OPTIONS") {
-    res.setHeader("Access-Control-Allow-Origin", ALLOW_ORIGINS.includes(origin) ? origin : "*");
-    res.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
-    res.setHeader("Access-Control-Allow-Headers", "Content-Type, x-debug-id");
-    return res.status(204).end();
-  }
-  res.setHeader("Access-Control-Allow-Origin", ALLOW_ORIGINS.includes(origin) ? origin : "*");
+  console.log("🔥 Entrou no huggingfaceProxy endpoint");
 
-  const t0 = Date.now();
-  const debugId = req.headers["x-debug-id"] || `DBG-${Date.now()}`;
   const token = process.env.HUGGINGFACE_TOKEN;
-  if (!token) return res.status(500).json({ error: "HUGGINGFACE_TOKEN ausente" });
+  console.log("🔑 Token existe?", !!token);
+
+  if (req.method !== "POST") {
+    return res.status(405).json({ error: "Method not allowed" });
+  }
+
+  const { input } = req.body || {};
+  console.log("📝 Input recebido:", input);
+
+  if (!input) {
+    return res.status(400).json({ error: "Missing input" });
+  }
 
   try {
-    const { input } = req.body || {};
-    if (!input) return res.status(400).json({ error: "input vazio" });
-
-    console.log(`[HF][${debugId}] IN →`, input);
-
-    const hfRes = await axios.post(
-      `https://api-inference.huggingface.co/models/${MODEL_ID}`,
+    const response = await axios.post(
+      "https://api-inference.huggingface.co/models/mistralai/Mistral-7B-Instruct-v0.2",
       { inputs: `[INST] ${input} [/INST]` },
-      { headers: { Authorization: `Bearer ${token}` }, timeout: 60_000 }
+      { headers: { Authorization: `Bearer ${token}` } }
     );
 
-    // Alguns modelos retornam array; outros, objeto
-    const data = Array.isArray(hfRes.data) ? hfRes.data[0] : hfRes.data;
-    const text = data?.generated_text || data?.text || "…";
+    console.log("✅ Resposta HF:", response.data);
 
-    console.log(
-      `[HF][${debugId}] OUT ← ${text?.slice(0, 120)}… | ${MODEL_ID} | ${Date.now() - t0}ms`
-    );
+    const output = Array.isArray(response.data)
+      ? response.data[0]?.generated_text
+      : response.data?.generated_text;
 
-    return res.status(200).json({ output: text, model: MODEL_ID, debugId, ms: Date.now() - t0 });
+    return res.status(200).json({ output: output || "Sem resposta do modelo" });
   } catch (err) {
-    console.error(`[HF][${debugId}] ERROR →`, err?.response?.data || err.message);
-    return res.status(500).json({ error: "Falha na HuggingFace", debugId });
+    console.error("❌ Erro HuggingFace:", err.response?.data || err.message);
+    return res.status(500).json({ error: "Erro no proxy HuggingFace" });
   }
 }
