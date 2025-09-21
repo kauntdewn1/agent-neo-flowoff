@@ -240,26 +240,64 @@ app.get('/api/health', (req, res) => {
 });
 
 // Webhook para integração com Hugging Face
-app.post('/api/huggingfaceProxy', (req, res) => {
+app.post('/api/huggingfaceProxy', async (req, res) => {
   const { input } = req.body;
   
   if (!input) {
     return res.status(400).json({ error: 'Input é obrigatório' });
   }
 
-  // Processar input através do agente
-  const sessionId = req.headers['x-session-id'] || uuidv4();
-  const response = agent.processMessage(input, sessionId);
-  
-  // Salvar lead se tiver informações suficientes
-  const lead = agent.saveLead(sessionId);
-  
-  res.json({
-    output: response.response,
-    actions: response.actions,
-    sessionId: sessionId,
-    lead: lead
-  });
+  try {
+    // Chamada para o modelo Mistral-7B-Instruct-v0.2
+    const huggingfaceResponse = await fetch('https://api-inference.huggingface.co/models/mistralai/Mistral-7B-Instruct-v0.2', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${process.env.HUGGINGFACE_TOKEN || 'hf_xxx_ocultado'}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        inputs: `[INST] Você é o concierge inteligente do site NEO.FLOWOFF. Sua missão é descobrir o perfil do visitante, entender suas dores e guiá-lo para o produto ideal. Responda de forma natural e personalizada. Input do usuário: ${input} [/INST]`
+      })
+    });
+
+    if (!huggingfaceResponse.ok) {
+      throw new Error('Erro na API do Hugging Face');
+    }
+
+    const aiResponse = await huggingfaceResponse.json();
+    const generatedText = aiResponse[0]?.generated_text || 'Desculpe, não consegui processar sua mensagem.';
+
+    // Processar também através do agente local para ações e leads
+    const sessionId = req.headers['x-session-id'] || uuidv4();
+    const agentResponse = agent.processMessage(input, sessionId);
+    
+    // Salvar lead se tiver informações suficientes
+    const lead = agent.saveLead(sessionId);
+    
+    res.json({
+      output: generatedText,
+      actions: agentResponse.actions,
+      sessionId: sessionId,
+      lead: lead,
+      source: 'huggingface-mistral'
+    });
+
+  } catch (error) {
+    console.error('Erro no Hugging Face:', error);
+    
+    // Fallback para o agente local em caso de erro
+    const sessionId = req.headers['x-session-id'] || uuidv4();
+    const response = agent.processMessage(input, sessionId);
+    const lead = agent.saveLead(sessionId);
+    
+    res.json({
+      output: response.response,
+      actions: response.actions,
+      sessionId: sessionId,
+      lead: lead,
+      source: 'local-fallback'
+    });
+  }
 });
 
 // Rota para servir o embed
