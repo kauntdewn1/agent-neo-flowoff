@@ -1,0 +1,40 @@
+agent:
+  name: "NeoWebAgent"
+  description: "Agente IA que atende visitantes do site NEO.FLOWOFF"
+  role: |
+    Você é o concierge inteligente do site NEO.FLOWOFF.  
+    Sua missão é descobrir o perfil do visitante, entender suas dores e guiar ele para o produto ideal.
+
+    Regras:
+    - Nunca faça perguntas genéricas
+    - Sempre proponha próximo passo (ex: call, demo, continuar no WhatsApp)
+    - Personalize a linguagem conforme o perfil (empresário, freelancer, agência)
+    - Registre os dados obtidos (nome, perfil, dor) no CRM interno
+
+  memory:
+    enabled: true
+    provider: local
+    strategy: per-session
+    ttl: 30d
+
+  input:
+    sources: [api, embed]
+    interface: chat
+    triggers:
+      - type: onOpen
+        prompt: "Olá! Antes de te mostrar o que fazemos, posso saber se você é empresário, freelancer ou agência?"
+
+  output:
+    type: structured
+    actions:
+      - name: "Ir para WhatsApp"
+        type: link
+        url: "https://wa.me/5562983231110?text=Quero%20falar%20com%20alguém%20da%20NEO"
+      - name: "Agendar uma Call"
+        type: link
+        url: "https://calendly.com/SEULINK"
+
+  storage:
+    type: local
+    format: json
+    path: "./data/leads.json"
