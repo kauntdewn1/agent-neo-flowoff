@@ -38,3 +38,12 @@ agent:
     type: local
     format: json
     path: "./data/leads.json"
+
+  webhooks:
+    onInput:
+      url: "https://agent-neo-flowoff.vercel.app/api/huggingfaceProxy"
+      method: POST
+      body:
+        input: "${input}"
+      responseMapping:
+        text: "${output}"

@@ -239,6 +239,29 @@ app.get('/api/health', (req, res) => {
   });
 });
 
+// Webhook para integração com Hugging Face
+app.post('/api/huggingfaceProxy', (req, res) => {
+  const { input } = req.body;
+  
+  if (!input) {
+    return res.status(400).json({ error: 'Input é obrigatório' });
+  }
+
+  // Processar input através do agente
+  const sessionId = req.headers['x-session-id'] || uuidv4();
+  const response = agent.processMessage(input, sessionId);
+  
+  // Salvar lead se tiver informações suficientes
+  const lead = agent.saveLead(sessionId);
+  
+  res.json({
+    output: response.response,
+    actions: response.actions,
+    sessionId: sessionId,
+    lead: lead
+  });
+});
+
 // Rota para servir o embed
 app.get('/embed', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'embed.html'));
