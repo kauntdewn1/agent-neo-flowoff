@@ -1,0 +1,12 @@
+{
+  "rewrites": [
+    {
+      "source": "/api/(.*)",
+      "destination": "/pages/api/index.js"
+    },
+    {
+      "source": "/embed",
+      "destination": "/pages/api/index.js"
+    }
+  ]
+}
