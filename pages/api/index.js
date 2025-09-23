@@ -294,5 +294,44 @@ app.get('/embed', (req, res) => {
   res.sendFile(path.join(__dirname, '..', 'public', 'embed.html'));
 });
 
-// Exportar para Vercel
-module.exports = app;
+// Exportar para Vercel como função serverless
+export default function handler(req, res) {
+  // Middleware básico
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+  
+  if (req.method === 'OPTIONS') {
+    res.status(200).end();
+    return;
+  }
+
+  // Roteamento básico
+  const { pathname } = new URL(req.url, `http://${req.headers.host}`);
+  
+  if (pathname === '/api/health') {
+    res.status(200).json({ 
+      status: 'ok', 
+      agent: 'NeoWebAgent',
+      message: 'Agente NEO.FLOWOFF funcionando!'
+    });
+    return;
+  }
+  
+  if (pathname === '/embed') {
+    res.status(200).send(`
+      <!DOCTYPE html>
+      <html>
+      <head><title>NEO.FLOWOFF - Agente IA</title></head>
+      <body>
+        <h1>🤖 NEO.FLOWOFF</h1>
+        <p>Agente IA funcionando!</p>
+        <p>Status: ✅ Online</p>
+      </body>
+      </html>
+    `);
+    return;
+  }
+  
+  res.status(404).json({ error: 'Endpoint não encontrado' });
+}
