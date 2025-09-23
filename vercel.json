@@ -1,12 +1,5 @@
 {
-  "rewrites": [
-    {
-      "source": "/api/(.*)",
-      "destination": "/pages/api/index.js"
-    },
-    {
-      "source": "/embed",
-      "destination": "/pages/api/index.js"
-    }
-  ]
+  "framework": "nextjs",
+  "buildCommand": "npm run build",
+  "outputDirectory": ".next"
 }
