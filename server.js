@@ -12,7 +12,6 @@ const PORT = process.env.PORT || 3000;
 app.use(cors());
 app.use(bodyParser.json());
 app.use(express.static('public'));
-app.use('/images', express.static('images'));
 
 // Sistema de memória para sessões
 const sessions = new Map();
