@@ -16,6 +16,10 @@
       "dest": "/server.js"
     },
     {
+      "src": "/desktop",
+      "dest": "/server.js"
+    },
+    {
       "src": "/(.*)",
       "dest": "/public/$1"
     }

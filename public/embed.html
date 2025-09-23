@@ -397,9 +397,24 @@
             }
         }
 
+        // Detectar desktop e redirecionar
+        function detectDesktop() {
+            const isDesktop = window.innerWidth > 768 || 
+                             (!navigator.userAgent.match(/Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i));
+            
+            if (isDesktop) {
+                window.location.href = '/desktop.html';
+                return true;
+            }
+            return false;
+        }
+
         // Inicializar o chat quando a página carregar
         document.addEventListener('DOMContentLoaded', () => {
-            new NeoChat();
+            // Só inicializar se não for desktop
+            if (!detectDesktop()) {
+                new NeoChat();
+            }
         });
     </script>
 </body>
