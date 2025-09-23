@@ -38,7 +38,7 @@ agent:
 
   webhooks:
     onInput:
-      url: "https://agent-neo-flowoff.vercel.app/api/huggingfaceProxy"
+      url: "https://flwff.eth/api/huggingfaceProxy"
       method: POST
       body:
         input: "${input}"
