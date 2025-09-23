@@ -27,12 +27,9 @@ agent:
   output:
     type: structured
     actions:
-      - name: "Ir para WhatsApp"
+      - name: "Falar no WhatsApp"
         type: link
-        url: "https://wa.me/5562983231110?text=Quero%20falar%20com%20alguém%20da%20NEO"
-      - name: "Agendar uma Call"
-        type: link
-        url: "https://calendly.com/SEULINK"
+        url: "https://wa.me/5562983231110?text=Olá!%20Vim%20pelo%20site%20NEO.FLOWOFF%20e%20quero%20saber%20mais%20sobre%20os%20serviços."
 
   storage:
     type: local

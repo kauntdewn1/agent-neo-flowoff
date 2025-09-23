@@ -111,40 +111,29 @@ class NeoWebAgent {
   }
 
   getActions(profile) {
-    const baseActions = [
+    const whatsappMessage = this.getWhatsAppMessage(profile);
+    
+    return [
       {
-        name: "Ir para WhatsApp",
+        name: "Falar no WhatsApp",
         type: "link",
-        url: "https://wa.me/5562983231110?text=Quero%20falar%20com%20alguém%20da%20NEO"
-      },
-      {
-        name: "Agendar uma Call",
-        type: "link", 
-        url: "https://calendly.com/SEULINK"
+        url: `https://wa.me/5562983231110?text=${encodeURIComponent(whatsappMessage)}`
       }
     ];
+  }
 
+  getWhatsAppMessage(profile) {
+    const baseMessage = "Olá! Vim pelo site NEO.FLOWOFF e quero saber mais sobre os serviços.";
+    
     if (profile === 'empresário') {
-      baseActions.unshift({
-        name: "Ver Soluções para Empresários",
-        type: "link",
-        url: "#empresarios"
-      });
+      return `${baseMessage} Sou empresário e preciso de soluções para escalar meu negócio.`;
     } else if (profile === 'freelancer') {
-      baseActions.unshift({
-        name: "Ver Soluções para Freelancers", 
-        type: "link",
-        url: "#freelancers"
-      });
+      return `${baseMessage} Sou freelancer e preciso de mais projetos e clientes qualificados.`;
     } else if (profile === 'agência') {
-      baseActions.unshift({
-        name: "Ver Soluções para Agências",
-        type: "link", 
-        url: "#agencias"
-      });
+      return `${baseMessage} Tenho uma agência e preciso de ferramentas para gerenciar múltiplos clientes.`;
     }
-
-    return baseActions;
+    
+    return baseMessage;
   }
 
   containsName(message) {

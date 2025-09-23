@@ -91,8 +91,8 @@ nano .env
 **Variáveis principais:**
 - `HUGGINGFACE_TOKEN` - Token da API do Hugging Face (obrigatório)
 - `PORT` - Porta do servidor (opcional, padrão: 3000)
-- `WHATSAPP_NUMBER` - Número do WhatsApp para redirecionamento
-- `CALENDLY_LINK` - Link do Calendly para agendamentos
+- `WHATSAPP_NUMBER` - Número do WhatsApp para redirecionamento (obrigatório)
+- `NODE_ENV` - Ambiente (development, production)
 
 **No Vercel:** Adicione as variáveis nas Environment Variables do projeto.
 
