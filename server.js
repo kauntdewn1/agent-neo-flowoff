@@ -306,11 +306,6 @@ app.get('/embed', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'embed.html'));
 });
 
-// Rota para servir a página desktop
-app.get('/desktop', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'desktop.html'));
-});
-
 app.listen(PORT, () => {
   console.log(`🤖 Agente NEO.FLOWOFF rodando na porta ${PORT}`);
   console.log(`📊 Dashboard: http://localhost:${PORT}/embed`);

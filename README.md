@@ -76,18 +76,27 @@ Os leads são salvos em `data/leads.json` com:
 
 ## 🔧 Configuração
 
-### Token do Hugging Face
-Para usar o modelo Mistral-7B-Instruct-v0.2, configure a variável de ambiente:
+### Configuração de Variáveis de Ambiente
+
+Copie o arquivo de exemplo e configure suas variáveis:
 
 ```bash
-# No Vercel, adicione nas Environment Variables:
-HUGGINGFACE_TOKEN=hf_seu_token_aqui
+# Copiar arquivo de exemplo
+cp env.example .env
 
-# Localmente, crie um arquivo .env:
-echo "HUGGINGFACE_TOKEN=hf_seu_token_aqui" > .env
+# Editar com suas configurações
+nano .env
 ```
 
-**Obtenha seu token em:** https://huggingface.co/settings/tokens
+**Variáveis principais:**
+- `HUGGINGFACE_TOKEN` - Token da API do Hugging Face (obrigatório)
+- `PORT` - Porta do servidor (opcional, padrão: 3000)
+- `WHATSAPP_NUMBER` - Número do WhatsApp para redirecionamento
+- `CALENDLY_LINK` - Link do Calendly para agendamentos
+
+**No Vercel:** Adicione as variáveis nas Environment Variables do projeto.
+
+**Obtenha seu token Hugging Face em:** https://huggingface.co/settings/tokens
 
 ### Personalização do Agente
 Edite `agents/neo-web-agent.whisky.yaml` para:
