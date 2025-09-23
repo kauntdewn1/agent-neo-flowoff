@@ -1,3 +1,4 @@
+// Vercel serverless function entry point
 const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
@@ -6,7 +7,6 @@ const fs = require('fs');
 const path = require('path');
 
 const app = express();
-const PORT = process.env.PORT || 3000;
 
 // Middleware
 app.use(cors());
@@ -15,7 +15,7 @@ app.use(express.static('public'));
 
 // Sistema de memória para sessões
 const sessions = new Map();
-const LEADS_FILE = path.join(__dirname, 'data', 'leads.json');
+const LEADS_FILE = path.join(__dirname, '..', 'data', 'leads.json');
 
 // Carregar leads existentes
 let leads = [];
@@ -291,11 +291,8 @@ app.post('/api/huggingfaceProxy', async (req, res) => {
 
 // Rota para servir o embed
 app.get('/embed', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'embed.html'));
+  res.sendFile(path.join(__dirname, '..', 'public', 'embed.html'));
 });
 
-app.listen(PORT, () => {
-  console.log(`🤖 Agente NEO.FLOWOFF rodando na porta ${PORT}`);
-  console.log(`📊 Dashboard: http://localhost:${PORT}/embed`);
-  console.log(`🔗 API: http://localhost:${PORT}/api/health`);
-});
+// Exportar para Vercel
+module.exports = app;
