@@ -37,8 +37,10 @@ npm run dev
 ## 🌐 Uso
 
 ### Acesso ao Chat
-- **Interface Web**: http://localhost:3000/embed
-- **API Health**: http://localhost:3000/api/health
+- **🌐 Produção**: https://flwff.eth/embed
+- **🏠 Homepage**: https://flwff.eth/
+- **🔗 API Health**: https://flwff.eth/api/health
+- **💻 Local**: http://localhost:3000/embed
 
 ### Endpoints da API
 
